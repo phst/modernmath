@@ -21,7 +21,7 @@ PDFDIR := $(TEXMF)/doc/latex/phst
 INSTALL := install
 MKTEXLSR := mktexlsr
 TEX := tex
-LATEX := lualatex
+LATEX := pdflatex
 LATEXFLAGS := --file-line-error --interaction=nonstopmode
 DRAFTFLAGS := --draftmode
 FINALFLAGS := --synctex=1

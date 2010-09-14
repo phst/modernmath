@@ -1,3 +1,4 @@
+auto/
 .DS_Store
 *~
 *.tmp
@@ -15,8 +16,4 @@
 *.ilg
 *.glo
 *.gls
-*.synctex
-*.tpt
-*.pyc
-*.cache
-auto/
+*.synctex.gz
