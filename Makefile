@@ -14,28 +14,29 @@ GLOSTY := gglo.ist
 SOURCES := $(DTX) $(INS)
 OBJECTS := $(STY) $(PDF)
 
-TEXMF := $(shell kpsewhich -var-value=TEXMFHOME)
+TEXMF := $(shell kpsewhich --var-value=TEXMFHOME)
 STYDIR := $(TEXMF)/tex/latex/phst
 PDFDIR := $(TEXMF)/doc/latex/phst
 
 INSTALL := install
-
 MKTEXLSR := mktexlsr
 TEX := tex
 LATEX := lualatex
-LATEXFLAGS := -file-line-error -interaction=nonstopmode
-DRAFTFLAGS := -draftmode
-FINALFLAGS := -synctex=1
+LATEXFLAGS := --file-line-error --interaction=nonstopmode
+DRAFTFLAGS := --draftmode
+FINALFLAGS := --synctex=1
 MAKEINDEX := makeindex
 
 
-default: $(STY)
+all: package doc
+
+package: $(STY)
 
 doc: $(PDF)
 
-all: default doc
+install: install-package install-doc
 
-install: default
+install-package: package
 	$(INSTALL) -d $(STYDIR)
 	$(INSTALL) -c -m 644 $(STY) $(STYDIR)
 	$(MKTEXLSR)
@@ -44,8 +45,6 @@ install-doc: doc
 	$(INSTALL) -d $(PDFDIR)
 	$(INSTALL) -c -m 644 $(PDF) $(PDFDIR)
 	$(MKTEXLSR)
-
-install-all: install install-doc
 
 $(STY): $(SOURCES)
 	$(TEX) $(INS)
