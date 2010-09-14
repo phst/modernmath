@@ -1,0 +1,161 @@
+% \iffalse meta-comment
+%
+% Copyright (C) 2010 by Philipp Stephani <st_philipp@yahoo.de>
+%
+% This file may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version.  The latest version of this license is in:
+%
+%    http://www.latex-project.org/lppl.txt
+%
+% and version 1.3c or later is part of all distributions of
+% LaTeX version 2009/09/24 or later.
+%
+% \fi
+%
+% \iffalse
+%<*driver>
+\documentclass[a4paper, 10pt]{phst-doc}
+
+\usepackage{modernmath}
+\newcommand*{\thispackage}{\textsf{modernmath}\xspace}
+
+\setlength{\overfullrule}{5pt}
+
+\begin{document}
+
+\DocInput{modernmath.dtx}
+\PrintChanges
+\PrintIndex
+
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{0}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+%
+% \changes{v0.1}{2010/01/12}{Initial version}
+%
+% \GetFileInfo{modernmath.sty}
+%
+% \title{The \thispackage package\thanks{This document corresponds to \thispackage{}~\fileversion, dated~\filedate.}}
+% \author{Philipp Stephani \\ \texttt{st\_philipp@yahoo.de}}
+%
+%
+% \maketitle
+% \tableofcontents
+% \listoftables
+%
+%
+% \section{Introduction}
+%
+%
+% \section{Interface}
+%
+%
+% \StopEventually{}
+%
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+\NeedsTeXFormat{LaTeX2e}[2009/09/24]
+\RequirePackage{etex}[1998/03/26]
+\RequirePackage{expl3}[2010/07/13]
+\ProvidesExplPackage{modernmath}{2010/09/07}{0.1a}%
+  {Modern mathematical typesetting for LaTeX}
+\msg_new:nnn { modernmath } { pdftex } {
+  Neither~ LuaTeX~ nor~ XeTeX~ discovered,~ falling~ back~
+  to~ legacy~ fonts
+}
+\msg_new:nnn { modernmath } { xetex-microtype } {
+  Micro-typographical~ enhancements~ in~ XeTeX~ are~ still~
+  in~ a~ very~ early~ stage
+}
+\msg_new:nnn { modernmath } { luatex } {
+  Unicode~ math~ typesetting~ in~ LuaTeX~ is~ still~
+  in~ a~ very~ early~ stage
+}
+\bool_new:N \g_modernmath_legacy_bool
+\luatex_if_engine:TF {
+  \msg_warning:nn { modernmath } { luatex }
+} {
+  \xetex_if_engine:F  {
+    \msg_warning:nn { modernmath } { pdftex }
+    \bool_gset_true:N \g_modernmath_legacy_bool
+  }
+}
+\bool_new:N \g_modernmath_microtype_bool
+\bool_gset_true:N \g_modernmath_microtype_bool
+\keys_define:nn { modernmath } {
+  microtype .bool_set:N = \g_modernmath_microtype_bool
+}
+\RequirePackage { l3keys2e } [ 2009/08/24 ]
+\ProcessKeysPackageOptions { modernmath }
+\RequirePackage { fixltx2e } [ 2006/09/13 ]
+\bool_if:NT \g_modernmath_legacy_bool {
+  \RequirePackage { lmodern } [ 2009/10/30 ]
+  \RequirePackage [ T1 ] { fontenc } [ 2005/09/27 ]
+  \RequirePackage { textcomp } [ 2005/09/27 ]
+}
+\RequirePackage { amsmath } [ 2000/07/18 ]
+\bool_if:NT \g_modernmath_legacy_bool {
+  \RequirePackage { amsfonts } [ 2009/06/22 ]
+  \RequirePackage { amssymb } [ 2009/06/22 ]
+}
+\RequirePackage { mathtools } [ 2010/07/11 ]
+\bool_if:NTF \g_modernmath_legacy_bool {
+  \RequirePackage { isomath } [ 2009/06/19 ]
+} {
+  \RequirePackage { fontspec } [ 2010/07/14 ]
+  \xetex_if_engine:T {
+    \RequirePackage { xunicode } [ 2010/05/18 ]
+  }
+}
+\bool_if:NT \g_modernmath_microtype_bool {
+  \xetex_if_engine:TF {
+    \msg_warning:nn { modernmath } { xetex-microtype }
+    \RequirePackage { microtype } [ 2010/05/20 ]
+  } {
+    \RequirePackage { microtype } [ 2010/01/10 ]
+  }
+}
+\bool_if:NF \g_modernmath_legacy_bool {
+  \RequirePackage { unicode-math } [ 2010/07/14 ]
+  \unimathsetup {
+    math-style     = ISO,
+    bold-style     = ISO,
+    sans-style     = italic,
+    nabla          = upright,
+    partial        = italic,
+    vargreek-shape = unicode
+  }
+  \setmainfont { Cambria }
+  \setsansfont { Calibri }
+  \setmonofont { Consolas }
+  \setmathfont { Cambria~ Math }
+}
+%</package>
+%    \end{macrocode}
+%
+% \Finale
+\endinput
