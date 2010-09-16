@@ -12,11 +12,12 @@
 
 (TeX-add-style-hook
  "modernmath"
- (lambda ()
-   (TeX-run-style-hooks
-    "etex" "expl3" "l3keys2e" "fixltx2e"
-    "lmodern" "fontenc" "textcomp"
-    "amsmath" "amsfonts" "amssymb"
-    "mathtools" "isomath"
-    "fontspec" "xunicode"
-    "microtype" "unicode-math")))
+ (function
+  (lambda ()
+    (TeX-run-style-hooks
+     "etex" "expl3" "l3keys2e" "fixltx2e"
+     "lmodern" "fontenc" "textcomp"
+     "amsmath" "amsfonts" "amssymb"
+     "mathtools" "isomath"
+     "fontspec" "xunicode"
+     "microtype" "unicode-math"))))
