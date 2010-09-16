@@ -1,57 +1,67 @@
-PKG := modernmath
-
-DTX := $(PKG).dtx
-INS := $(PKG).ins
-STY := $(PKG).sty
-PDF := $(PKG).pdf
-IDXSRC := $(PKG).idx
-IDXDST := $(PKG).ind
-IDXSTY := gind.ist
-GLOSRC := $(PKG).glo
-GLODST := $(PKG).gls
-GLOSTY := gglo.ist
-
-SOURCES := $(DTX) $(INS)
-OBJECTS := $(STY) $(PDF)
-
-TEXMF := $(shell kpsewhich --var-value=TEXMFHOME)
-STYDIR := $(TEXMF)/tex/latex/phst
-PDFDIR := $(TEXMF)/doc/latex/phst
-
+SHELL := /bin/sh
 INSTALL := install
+INSTALL_PROGRAM := $(INSTALL)
+INSTALL_DATA := $(INSTALL) -m 644
+
 MKTEXLSR := mktexlsr
 TEX := tex
 LATEX := pdflatex
-LATEXFLAGS := --file-line-error --interaction=nonstopmode
-DRAFTFLAGS := --draftmode
-FINALFLAGS := --synctex=1
 MAKEINDEX := makeindex
 
+name := modernmath
+bundle := phst
 
-all: package doc
+texmf := $(shell kpsewhich --var-value=TEXMFHOME)
+branch := latex/$(bundle)
+destdir := $(texmf)/tex/$(branch)
+docdir := $(texmf)/doc/$(branch)
+auctexdir := ~/.emacs.d/auctex/style/$(bundle)
 
-package: $(STY)
+LATEXFLAGS := --file-line-error --interaction=scrollmode
+LATEXFLAGS_DRAFT := $(LATEXFLAGS) --draftmode
+LATEXFLAGS_FINAL := $(LATEXFLAGS) --synctex=1
 
-doc: $(PDF)
+source := $(name).dtx
+driver := $(name).ins
+destination := $(name).sty
+manual := $(name).pdf
+auctex_style := $(name).el
+index_src := $(name).idx
+index_dest := $(name).ind
+index_sty := gind.ist
+changes_src := $(name).glo
+changes_dest := $(name).gls
+changes_sty := gglo.ist
 
-install: install-package install-doc
 
-install-package: package
-	$(INSTALL) -d $(STYDIR)
-	$(INSTALL) -c -m 644 $(STY) $(STYDIR)
+all: $(destination) $(auctex_style)
+
+pdf: $(manual)
+
+complete: all pdf
+
+install: all
+	$(INSTALL) -d $(destdir)
+	$(INSTALL_DATA) $(destination) $(destdir)
+	$(INSTALL) -d $(auctexdir)
+	$(INSTALL_DATA) $(auctex_style) $(auctexdir)
 	$(MKTEXLSR)
 
-install-doc: doc
-	$(INSTALL) -d $(PDFDIR)
-	$(INSTALL) -c -m 644 $(PDF) $(PDFDIR)
+install-pdf: pdf
+	$(INSTALL) -d $(docdir)
+	$(INSTALL_DATA) $(manual) $(docdir)
 	$(MKTEXLSR)
 
-$(STY): $(SOURCES)
-	$(TEX) $(INS)
+install-complete: install install-pdf
 
-$(PDF): $(STY) $(DTX)
-	$(LATEX) $(LATEXFLAGS) $(DRAFTFLAGS) $(DTX)
-	$(MAKEINDEX) -s $(IDXSTY) -o $(IDXDST) $(IDXSRC)
-	$(MAKEINDEX) -s $(GLOSTY) -o $(GLODST) $(GLOSRC)
-	$(LATEX) $(LATEXFLAGS) $(DRAFTFLAGS) $(DTX)
-	$(LATEX) $(LATEXFLAGS) $(FINALFLAGS) $(DTX)
+$(destination): $(source) $(driver)
+	$(TEX) $(driver)
+
+$(manual): $(source) $(destination)
+	$(LATEX) $(LATEXFLAGS_DRAFT) $(source)
+	$(MAKEINDEX) -s $(index_sty) -o $(index_dest) $(index_src)
+	$(MAKEINDEX) -s $(changes_sty) -o $(changes_dest) $(changes_src)
+	$(LATEX) $(LATEXFLAGS_DRAFT) $(source)
+	$(LATEX) $(LATEXFLAGS_FINAL) $(source)
+
+.SUFFIXES:
