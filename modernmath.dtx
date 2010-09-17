@@ -105,9 +105,11 @@
     \bool_gset_true:N \g_modernmath_legacy_bool
   }
 }
+\bool_new:N \g_modernmath_inputenc_bool
 \bool_new:N \g_modernmath_microtype_bool
 \bool_gset_true:N \g_modernmath_microtype_bool
 \keys_define:nn { modernmath } {
+  inputenc  .bool_set:N = \g_modernmath_inputenc_bool ,
   microtype .bool_set:N = \g_modernmath_microtype_bool
 }
 \RequirePackage { l3keys2e } [ 2009/08/24 ]
@@ -140,7 +142,11 @@
     \RequirePackage { microtype } [ 2010/01/10 ]
   }
 }
-\bool_if:NF \g_modernmath_legacy_bool {
+\bool_if:NTF \g_modernmath_legacy_bool {
+  \bool_if:NT \g_modernmath_inputenc_bool {
+    \RequirePackage [ utf8 ] { inputenc } [ 2008/03/30 ]
+  }
+} {
   \RequirePackage { unicode-math } [ 2010/07/14 ]
   \unimathsetup {
     math-style     = ISO,

@@ -15,7 +15,7 @@ texmf := $(shell kpsewhich --var-value=TEXMFHOME)
 branch := latex/$(bundle)
 destdir := $(texmf)/tex/$(branch)
 docdir := $(texmf)/doc/$(branch)
-auctexdir := ~/.emacs.d/auctex/style/$(bundle)
+auctexdir := ~/.emacs.d/auctex/style
 
 LATEXFLAGS := --file-line-error --interaction=scrollmode
 LATEXFLAGS_DRAFT := $(LATEXFLAGS) --draftmode

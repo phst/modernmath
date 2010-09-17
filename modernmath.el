@@ -20,4 +20,5 @@
      "amsmath" "amsfonts" "amssymb"
      "mathtools" "isomath"
      "fontspec" "xunicode"
-     "microtype" "unicode-math"))))
+     "microtype" "unicode-math"
+     "inputenc"))))
