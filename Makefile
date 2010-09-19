@@ -28,9 +28,11 @@ manual := $(name).pdf
 auctex_style := $(name).el
 index_src := $(name).idx
 index_dest := $(name).ind
+index_log := $(name).ilg
 index_sty := gind.ist
 changes_src := $(name).glo
 changes_dest := $(name).gls
+changes_log := $(name).glg
 changes_sty := gglo.ist
 
 
@@ -59,8 +61,8 @@ $(destination): $(source) $(driver)
 
 $(manual): $(source) $(destination)
 	$(LATEX) $(LATEXFLAGS_DRAFT) $(source)
-	$(MAKEINDEX) -s $(index_sty) -o $(index_dest) $(index_src)
-	$(MAKEINDEX) -s $(changes_sty) -o $(changes_dest) $(changes_src)
+	$(MAKEINDEX) -s $(index_sty) -o $(index_dest) -t $(index_log) $(index_src)
+	$(MAKEINDEX) -s $(changes_sty) -o $(changes_dest) -t $(changes_log) $(changes_src)
 	$(LATEX) $(LATEXFLAGS_DRAFT) $(source)
 	$(LATEX) $(LATEXFLAGS_FINAL) $(source)
 

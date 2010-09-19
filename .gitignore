@@ -16,4 +16,5 @@ auto/
 *.ilg
 *.glo
 *.gls
+*.glg
 *.synctex.gz
