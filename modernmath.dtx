@@ -156,6 +156,24 @@
     partial        = italic,
     vargreek-shape = unicode
   }
+  \msg_new:nnn { modernmath } { colon } {
+    The~ unicode-math~ package~ defines~ #1,~ but~ it~ seems~ you~ have~
+    loaded~ a~ package~ which~ defines~ #2.~
+    I'm~ setting~ #2~ to~ #1.
+  }
+  \cs_new_protected_nopar:Nn \modernmath_check_colon:NN {
+    \cs_if_exist:NT #2 {
+      \msg_warning:nnxx { modernmath } { colon }
+      { \token_to_str:N #1 } { \token_to_str:N #2 }
+      \RenewDocumentCommand #2 { } { #1 }
+    }
+  }
+  \AtBeginDocument {
+    \modernmath_check_colon:NN \coloneq \coloneqq
+    \modernmath_check_colon:NN \coloneq \colonequals
+    \modernmath_check_colon:NN \eqcolon \eqqcolon
+    \modernmath_check_colon:NN \eqcolon \equalscolon
+  }
   \setmainfont { Cambria }
   \setsansfont { Calibri }
   \setmonofont { Consolas }
