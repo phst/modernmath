@@ -164,7 +164,7 @@
   \cs_new_protected_nopar:Nn \modernmath_check_colon:NN {
     \cs_if_exist:NT #2 {
       \msg_warning:nnxx { modernmath } { colon }
-      { \token_to_str:N #1 } { \token_to_str:N #2 }
+        { \token_to_str:N #1 } { \token_to_str:N #2 }
       \RenewDocumentCommand #2 { } { #1 }
     }
   }
