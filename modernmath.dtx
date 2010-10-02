@@ -52,7 +52,8 @@
 %   Right brace   \}     Tilde         \~}
 %
 %
-% \changes{v0.1a}{2010/01/12}{Initial version}
+% \changes{v0.1}{2010/09/15}{Initial version}
+% \changes{v0.2}{2010/10/02}{Added mapping and language options}
 %
 % \GetFileInfo{modernmath.sty}
 %
@@ -82,35 +83,48 @@
 \NeedsTeXFormat{LaTeX2e}[2009/09/24]
 \RequirePackage{etex}[1998/03/26]
 \RequirePackage{expl3}[2010/07/13]
-\ProvidesExplPackage{modernmath}{2010/09/15}{0.1a}%
+\ProvidesExplPackage{modernmath}{2010/10/02}{0.2}%
   {Modern mathematical typesetting for LaTeX}
-\msg_new:nnn { modernmath } { pdftex } {
-  Neither~ LuaTeX~ nor~ XeTeX~ discovered,~ falling~ back~
-  to~ legacy~ fonts
+\msg_new:nnn { modernmath } { legacy } {
+  Neither~ LuaTeX~ nor~ XeTeX~ detected,~ falling~ back~
+  to~ legacy~ font~ encoding
 }
 \msg_new:nnn { modernmath } { xetex-microtype } {
-  Micro-typographical~ enhancements~ in~ XeTeX~ are~ still~
+  Microtypographical~ enhancements~ in~ XeLaTeX~ are~ still~
   in~ a~ very~ early~ stage
 }
 \msg_new:nnn { modernmath } { luatex } {
-  Unicode~ math~ typesetting~ in~ LuaTeX~ is~ still~
+  Unicode~ math~ typesetting~ in~ LuaLaTeX~ is~ still~
   in~ a~ very~ early~ stage
 }
 \bool_new:N \g_modernmath_legacy_bool
 \luatex_if_engine:TF {
   \msg_warning:nn { modernmath } { luatex }
 } {
-  \xetex_if_engine:F  {
-    \msg_warning:nn { modernmath } { pdftex }
+  \xetex_if_engine:F {
+    \msg_warning:nn { modernmath } { legacy }
     \bool_gset_true:N \g_modernmath_legacy_bool
   }
 }
-\bool_new:N \g_modernmath_inputenc_bool
+\bool_new:N \g_modernmath_mapping_bool
 \bool_new:N \g_modernmath_microtype_bool
-\bool_gset_true:N \g_modernmath_microtype_bool
+\bool_new:N \g_modernmath_inputenc_bool
+\tl_new:N \g_modernmath_mainlanguage_tl
+\tl_new:N \g_modernmath_otherlanguages_tl
 \keys_define:nn { modernmath } {
-  inputenc  .bool_set:N = \g_modernmath_inputenc_bool ,
-  microtype .bool_set:N = \g_modernmath_microtype_bool
+  mapping         .bool_gset:N = \g_modernmath_mapping_bool,
+  microtype       .bool_gset:N = \g_modernmath_microtype_bool,
+  inputenc        .bool_gset:N = \g_modernmath_inputenc_bool,
+  main-language   .tl_gset:N   = \g_modernmath_mainlanguage_tl,
+  other-languages .tl_gset:N   = \g_modernmath_otherlanguages_tl
+}
+% fix l3keys bug
+\cs_new_eq:NN \bool_nset_true:N \bool_gset_true:N
+\cs_new_eq:NN \bool_nset_false:N \bool_gset_false:N
+\keys_set:nn { modernmath } {
+  mapping   = false,
+  microtype = true,
+  inputenc  = true
 }
 \RequirePackage { l3keys2e } [ 2009/08/24 ]
 \ProcessKeysPackageOptions { modernmath }
@@ -119,6 +133,23 @@
   \RequirePackage { lmodern } [ 2009/10/30 ]
   \RequirePackage [ T1 ] { fontenc } [ 2005/09/27 ]
   \RequirePackage { textcomp } [ 2005/09/27 ]
+}
+\tl_new:N \l_modernmath_temp_tl
+\tl_if_empty:NF \g_modernmath_mainlanguage_tl {
+  \xetex_if_engine:TF {
+    \RequirePackage { polyglossia } [ 2010/07/27 ]
+    \setmainlanguage { \g_modernmath_mainlanguage_tl }
+    \tl_if_empty:NF \g_modernmath_otherlanguages_tl {
+      \setotherlanguages { \g_modernmath_otherlanguages_tl }
+    }
+  } {
+    \tl_set_eq:NN \l_modernmath_temp_tl \g_modernmath_otherlanguages_tl
+    \tl_if_empty:NF \l_modernmath_temp_tl {
+      \tl_put_right:NN \l_modernmath_temp_tl { , }
+    }
+    \tl_put_right:NN \l_modernmath_temp_tl \g_modernmath_mainlanguage_tl
+    \RequirePackage [ \l_modernmath_temp_tl ] { babel } [ 2008/07/06 ]
+  }
 }
 \RequirePackage { amsmath } [ 2000/07/18 ]
 \bool_if:NT \g_modernmath_legacy_bool {
@@ -173,6 +204,9 @@
     \modernmath_check_colon:NN \coloneq \colonequals
     \modernmath_check_colon:NN \eqcolon \eqqcolon
     \modernmath_check_colon:NN \eqcolon \equalscolon
+  }
+  \bool_if:NT \g_modernmath_mapping_bool {
+    \addfontfeatures { Ligatures = TeX }
   }
   \setmainfont { Cambria }
   \setsansfont { Calibri }
