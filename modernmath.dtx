@@ -53,7 +53,6 @@
 %
 %
 % \changes{v0.1}{2010/09/15}{Initial version}
-% \changes{v0.2}{2010/10/02}{Added mapping and language options}
 %
 % \GetFileInfo{modernmath.sty}
 %
@@ -106,49 +105,81 @@
     \bool_gset_true:N \g_modernmath_legacy_bool
   }
 }
-\bool_new:N \g_modernmath_mapping_bool
+%    \end{macrocode}
+% \changes{v0.2}{2010/10/02}{Added mapping and language options}
+% \changes{v0.3}{2010/10/03}{Added options for number style}
+%    \begin{macrocode}
 \bool_new:N \g_modernmath_microtype_bool
 \bool_new:N \g_modernmath_inputenc_bool
-\tl_new:N \g_modernmath_mainlanguage_tl
-\tl_new:N \g_modernmath_otherlanguages_tl
+\bool_new:N \g_modernmath_mapping_bool
+\bool_new:N \g_modernmath_lowerfig_bool
+\bool_new:N \g_modernmath_propfig_bool
+\tl_new:N \g_modernmath_mainlang_tl
+\tl_new:N \g_modernmath_otherlang_tl
 \keys_define:nn { modernmath } {
-  mapping         .bool_gset:N = \g_modernmath_mapping_bool,
-  microtype       .bool_gset:N = \g_modernmath_microtype_bool,
-  inputenc        .bool_gset:N = \g_modernmath_inputenc_bool,
-  main-language   .tl_gset:N   = \g_modernmath_mainlanguage_tl,
-  other-languages .tl_gset:N   = \g_modernmath_otherlanguages_tl
+  microtype            .bool_gset:N = \g_modernmath_microtype_bool,
+  inputenc             .bool_gset:N = \g_modernmath_inputenc_bool,
+  mapping              .bool_gset:N = \g_modernmath_mapping_bool,
+  lowercase-figures    .bool_gset:N = \g_modernmath_lowerfig_bool,
+  proportional-figures .bool_gset:N = \g_modernmath_propfig_bool,
+  main-language        .tl_gset:N   = \g_modernmath_mainlang_tl,
+  other-languages      .tl_gset:N   = \g_modernmath_otherlang_tl
 }
-% fix l3keys bug
+%    \end{macrocode}
+% L3: fix l3keys bug
+%    \begin{macrocode}
 \cs_new_eq:NN \bool_nset_true:N \bool_gset_true:N
 \cs_new_eq:NN \bool_nset_false:N \bool_gset_false:N
 \keys_set:nn { modernmath } {
-  mapping   = false,
-  microtype = true,
-  inputenc  = true
+  microtype            = true,
+  inputenc             = true,
+  mapping              = false,
+  lowercase-figures    = true,
+  proportional-figures = true
 }
 \RequirePackage { l3keys2e } [ 2009/08/24 ]
 \ProcessKeysPackageOptions { modernmath }
 \RequirePackage { fixltx2e } [ 2006/09/13 ]
+%    \end{macrocode}
+% L3: this belongs in expl3
+%    \begin{macrocode}
+\cs_new_nopar:Nn \modernmath_bool_to_str:N {
+  \bool_if:NTF #1 { true } { false }
+}
+\clist_new:N \l_modernmath_tmpa_clist
+\clist_new:N \l_modernmath_tmpb_clist
 \bool_if:NT \g_modernmath_legacy_bool {
   \RequirePackage { lmodern } [ 2009/10/30 ]
+  \bool_if:nT { \g_modernmath_lowerfig_bool || \g_modernmath_propfig_bool } {
+%    \end{macrocode}
+% L3: |\clist_put| accepts more than one list element
+%    \begin{macrocode}
+    \clist_put_right:Nx \l_modernmath_tmpa_clist {
+      oldstyle     = \modernmath_bool_to_str:N \g_modernmath_lowerfig_bool,
+      proportional = \modernmath_bool_to_str:N \g_modernmath_propfig_bool
+    }
+    \RequirePackage [
+      rm = { \clist_use:N \l_modernmath_tmpa_clist },
+      sf = { \clist_use:N \l_modernmath_tmpa_clist },
+      tt = { \clist_use:N \l_modernmath_tmpa_clist, variable = false }
+    ] { cfr-lm } [ 2010/05/20 ]
+    \clist_clear:N \l_modernmath_tmpa_clist
+  }
   \RequirePackage [ T1 ] { fontenc } [ 2005/09/27 ]
   \RequirePackage { textcomp } [ 2005/09/27 ]
 }
-\tl_new:N \l_modernmath_temp_tl
-\tl_if_empty:NF \g_modernmath_mainlanguage_tl {
+\tl_if_empty:NF \g_modernmath_mainlang_tl {
   \xetex_if_engine:TF {
     \RequirePackage { polyglossia } [ 2010/07/27 ]
-    \setmainlanguage { \g_modernmath_mainlanguage_tl }
-    \tl_if_empty:NF \g_modernmath_otherlanguages_tl {
-      \setotherlanguages { \g_modernmath_otherlanguages_tl }
+    \setmainlanguage { \g_modernmath_mainlang_tl }
+    \tl_if_empty:NF \g_modernmath_otherlang_tl {
+      \setotherlanguages { \g_modernmath_otherlang_tl }
     }
   } {
-    \tl_set_eq:NN \l_modernmath_temp_tl \g_modernmath_otherlanguages_tl
-    \tl_if_empty:NF \l_modernmath_temp_tl {
-      \tl_put_right:NN \l_modernmath_temp_tl { , }
-    }
-    \tl_put_right:NN \l_modernmath_temp_tl \g_modernmath_mainlanguage_tl
-    \RequirePackage [ \l_modernmath_temp_tl ] { babel } [ 2008/07/06 ]
+    \clist_put_right:No \l_modernmath_tmpa_clist \g_modernmath_otherlang_tl
+    \clist_put_right:No \l_modernmath_tmpa_clist \g_modernmath_mainlang_tl
+    \RequirePackage [ \clist_use:N \l_modernmath_tmpa_clist ] { babel } [ 2008/07/06 ]
+    \clist_clear:N \l_modernmath_tmpa_clist
   }
 }
 \RequirePackage { amsmath } [ 2000/07/18 ]
@@ -160,10 +191,7 @@
 \bool_if:NTF \g_modernmath_legacy_bool {
   \RequirePackage { isomath } [ 2009/06/19 ]
 } {
-  \RequirePackage { fontspec } [ 2010/07/14 ]
-  \xetex_if_engine:T {
-    \RequirePackage { xunicode } [ 2010/05/18 ]
-  }
+  \RequirePackage { fontspec } [ 2010/09/29 ]
 }
 \bool_if:NT \g_modernmath_microtype_bool {
   \xetex_if_engine:TF {
@@ -205,9 +233,26 @@
     \modernmath_check_colon:NN \eqcolon \eqqcolon
     \modernmath_check_colon:NN \eqcolon \equalscolon
   }
-  \bool_if:NT \g_modernmath_mapping_bool {
-    \addfontfeatures { Ligatures = TeX }
+  \bool_if:NT \g_modernmath_lowerfig_bool {
+    \clist_put_right:Nn \l_modernmath_tmpb_clist { Lowercase }
   }
+  \bool_if:NT \g_modernmath_propfig_bool {
+    \clist_put_right:Nn \l_modernmath_tmpb_clist { Proportional }
+  }
+  \clist_if_empty:NF \l_modernmath_tmpb_clist {
+    \clist_put_right:Nx \l_modernmath_tmpa_clist {
+      Numbers = { \clist_use:N \l_modernmath_tmpb_clist }
+    }
+    \clist_clear:N \l_modernmath_tmpb_clist
+  }
+  \bool_if:NT \g_modernmath_mapping_bool {
+    \clist_put_right:Nn \l_modernmath_tmpa_clist { Ligatures = TeX }
+  }
+%    \end{macrocode}
+% L3: The V arg.\ spec.\ works fine with clists, a fact which is undocumented
+%    \begin{macrocode}
+  \exp_args:NV \defaultfontfeatures \l_modernmath_tmpa_clist
+  \clist_clear:N \l_modernmath_tmpa_clist
   \setmainfont { Cambria }
   \setsansfont { Calibri }
   \setmonofont { Consolas }

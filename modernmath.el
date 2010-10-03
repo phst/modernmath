@@ -16,9 +16,10 @@
   (lambda ()
     (TeX-run-style-hooks
      "etex" "expl3" "l3keys2e" "fixltx2e"
-     "lmodern" "fontenc" "textcomp"
-     "amsmath" "amsfonts" "amssymb"
-     "mathtools" "isomath"
-     "fontspec" "xunicode"
-     "microtype" "unicode-math"
+     "lmodern" "cfr-lm" "fontenc" "textcomp"
+     "polyglossia"
+     "babel"
+     "amsmath" "amsfonts" "amssymb" "mathtools"
+     "isomath"
+     "fontspec" "microtype" "unicode-math"
      "inputenc"))))
