@@ -1,6 +1,7 @@
 amsfonts
 amsmath
 booktabs
+cfr-lm
 ec
 etex-pkg
 expl3
@@ -16,6 +17,7 @@ lm
 mh
 microtype
 mptopdf
+nfssext-cfr
 oberdiek
 pdftex-def
 thumbpdf
@@ -24,4 +26,5 @@ url
 vntex
 was
 xcolor
+xkeyval
 xpackages
