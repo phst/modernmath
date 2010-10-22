@@ -96,13 +96,13 @@
   Unicode~ math~ typesetting~ in~ LuaLaTeX~ is~ still~
   in~ a~ very~ early~ stage
 }
-\bool_new:N \g_modernmath_legacy_bool
+\bool_new:N \c_modernmath_legacy_bool
 \luatex_if_engine:TF {
   \msg_warning:nn { modernmath } { luatex }
 } {
   \xetex_if_engine:F {
     \msg_warning:nn { modernmath } { legacy }
-    \bool_gset_true:N \g_modernmath_legacy_bool
+    \bool_gset_true:N \c_modernmath_legacy_bool
   }
 }
 %    \end{macrocode}
@@ -148,7 +148,7 @@
 }
 \clist_new:N \l_modernmath_tmpa_clist
 \clist_new:N \l_modernmath_tmpb_clist
-\bool_if:NT \g_modernmath_legacy_bool {
+\bool_if:NT \c_modernmath_legacy_bool {
   \RequirePackage { lmodern } [ 2009/10/30 ]
   \bool_if:nT { \g_modernmath_lowerfig_bool || \g_modernmath_propfig_bool } {
 %    \end{macrocode}
@@ -183,12 +183,12 @@
   }
 }
 \RequirePackage { amsmath } [ 2000/07/18 ]
-\bool_if:NT \g_modernmath_legacy_bool {
+\bool_if:NT \c_modernmath_legacy_bool {
   \RequirePackage { amsfonts } [ 2009/06/22 ]
   \RequirePackage { amssymb } [ 2009/06/22 ]
 }
 \RequirePackage { mathtools } [ 2010/07/11 ]
-\bool_if:NTF \g_modernmath_legacy_bool {
+\bool_if:NTF \c_modernmath_legacy_bool {
   \RequirePackage { isomath } [ 2009/06/19 ]
 } {
   \RequirePackage { fontspec } [ 2010/09/29 ]
@@ -201,7 +201,7 @@
     \RequirePackage { microtype } [ 2010/01/10 ]
   }
 }
-\bool_if:NTF \g_modernmath_legacy_bool {
+\bool_if:NTF \c_modernmath_legacy_bool {
   \bool_if:NT \g_modernmath_inputenc_bool {
     \RequirePackage [ utf8 ] { inputenc } [ 2008/03/30 ]
   }
