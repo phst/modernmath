@@ -223,11 +223,15 @@
   \RequirePackage { fontspec } [ 2010/09/29 ]
 }
 \bool_if:NT \g_modernmath_microtype_external_bool {
-  \xetex_if_engine:TF {
-    \msg_warning:nn { modernmath } { xetex-microtype }
-    \RequirePackage { microtype } [ 2010/11/05 ]
+  \luatex_if_engine:TF {
+    \RequirePackage { microtype } [ 2010/11/11 ]
   } {
-    \RequirePackage { microtype } [ 2010/01/10 ]
+    \xetex_if_engine:TF {
+      \msg_warning:nn { modernmath } { xetex-microtype }
+      \RequirePackage { microtype } [ 2010/11/05 ]
+    } {
+      \RequirePackage { microtype } [ 2010/01/10 ]
+    }
   }
 }
 \bool_if:NTF \c_modernmath_legacy_bool {
@@ -305,6 +309,40 @@
   \clist_clear:N \l_modernmath_tmpa_clist
   \clist_clear:N \l_modernmath_tmpb_clist
   \clist_clear:N \l_modernmath_tmpc_clist
+  \luatex_if_engine:T {
+    \directlua {
+      local~ function~ define_font(...)~
+        local~ fontdata = fonts.define.read(...)~
+        if~ fontdata~ then~
+          local~ shared = fontdata.shared~
+          if~ shared~ then~
+            local~ otfdata = shared.otfdata~
+            if~ otfdata~ then~
+              local~ metadata = otfdata.metadata~
+              if~ metadata~ then~
+                local~ mathdata = metadata.math~
+                if~ mathdata~ then~
+                  local~ factor = fontdata.size / fontdata.units~
+                  fontdata.MathConstants = {}~
+                  for~ key, value~ in~ pairs(mathdata)~ do~
+                    local~ tex_value = value~
+                    if~ not~ key:find("Percent")~ then~
+                      tex_value = factor * tex_value~
+                    end~
+                    fontdata.MathConstants[key] = tex_value~
+                  end~
+                  fontdata.MathConstants.DisplayOperatorMinHeight = \number \dimexpr 4ex \relax \c_space_tl~
+                end~
+              end~
+            end~
+          end~
+        end~
+        return~ fontdata~
+      end~
+      luatexbase.remove_from_callback("define_font", "luaotfload.define_font")~
+      luatexbase.add_to_callback("define_font", define_font, "modernmath.define_font", 1)
+    }
+  }
 }
 %</package>
 %    \end{macrocode}
