@@ -310,13 +310,13 @@
   \clist_clear:N \l_modernmath_tmpb_clist
   \clist_clear:N \l_modernmath_tmpc_clist
   \luatex_if_engine:T {
-    \directlua {
+    \lua_now:x {
       local~ function~ patch_font(fontdata)~
         if~ fontdata.MathConstants~ then~
           fontdata.MathConstants.DisplayOperatorMinHeight = \number \dimexpr 4ex \relax \c_space_tl~
         end~
       end~
-      luaotfload.add_patch_callback(patch_font, "modernmath.patch_font")
+      luatexbase.add_to_callback("luaotfload.patch_font", patch_font, "modernmath.patch_font")
     }
   }
 }
