@@ -278,8 +278,8 @@
   \bool_if:NT \g_modernmath_microtype_internal_bool {
     \newfontfeature { Protrusion } { protrusion = default; }
     \newfontfeature { Expansion  } { expansion  = default; }
-    \int_set_eq:NN \pdf_protrudechars:D \c_two
-    \int_set_eq:NN \pdf_adjustspacing:D \c_two
+    \int_set_eq:NN \pdfprotrudechars \c_two
+    \int_set_eq:NN \pdfadjustspacing \c_two
     \directlua {
       fonts.protrusions.setups.default.factor = 0.5
     }
