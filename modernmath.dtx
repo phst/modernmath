@@ -286,13 +286,13 @@
     \defaultfontfeatures { Protrusion, Expansion }
   }
   \cs_new_protected_nopar:Nn \modernmath_set_font:Nnnn {
-    \group_begin:
-    \clist_clear:N \l_modernmath_tmpa_clist
-    \clist_put_right:Nn \l_modernmath_tmpa_clist { #2 }
+    \clist_clear:N \l_modernmath_features_clist
+    \clist_put_right:Nn \l_modernmath_features_clist { #2 }
     \tl_if_empty:nF { #3 } {
-      \clist_put_right:Nn \l_modernmath_tmpa_clist { Numbers = { #3 } }
+      \clist_put_right:Nn \l_modernmath_features_clist { Numbers = { #3 } }
     }
-    \exp_args:NNNV \group_end: \modernmath_cmd_with_optlist:Nn #1 \l_modernmath_tmpa_clist { #4 }
+    \exp_args:NNV \modernmath_cmd_with_optlist:Nn #1 \l_modernmath_features_clist { #4 }
+    \clist_clear:N \l_modernmath_features_clist
   }
   \cs_generate_variant:Nn \modernmath_set_font:Nnnn { NVV }
 %    \end{macrocode}
