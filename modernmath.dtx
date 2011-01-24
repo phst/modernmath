@@ -173,26 +173,30 @@
   }
 }
 \cs_generate_variant:Nn \modernmath_cmd_with_optlist:Nn { NV }
-\clist_new:N \l_modernmath_tmpa_clist
-\clist_new:N \l_modernmath_tmpb_clist
-\clist_new:N \l_modernmath_tmpc_clist
+\clist_new:N \l_modernmath_features_clist
+\clist_new:N \l_modernmath_prop_features_clist
+\clist_new:N \l_modernmath_mono_features_clist
+\clist_new:N \l_modernmath_numbers_clist
+\clist_new:N \l_modernmath_prop_numbers_clist
+\clist_new:N \l_modernmath_mono_numbers_clist
+\clist_new:N \l_modernmath_languages_clist
 \bool_if:NT \c_modernmath_legacy_bool {
   \RequirePackage { lmodern } [ 2009/10/30 ]
   \bool_if:nT { \g_modernmath_lowerfig_bool || \g_modernmath_propfig_bool } {
-    \clist_clear:N \l_modernmath_tmpa_clist
+    \clist_clear:N \l_modernmath_features_clist
 %    \end{macrocode}
 % L3: |\clist_put| accepts more than one list element
 %    \begin{macrocode}
-    \clist_put_right:Nx \l_modernmath_tmpa_clist {
+    \clist_put_right:Nx \l_modernmath_features_clist {
       oldstyle     = \modernmath_bool_to_str:N \g_modernmath_lowerfig_bool,
       proportional = \modernmath_bool_to_str:N \g_modernmath_propfig_bool
     }
     \RequirePackage [
-      rm = { \clist_use:N \l_modernmath_tmpa_clist },
-      sf = { \clist_use:N \l_modernmath_tmpa_clist },
-      tt = { \clist_use:N \l_modernmath_tmpa_clist, variable = false }
+      rm = { \clist_use:N \l_modernmath_features_clist },
+      sf = { \clist_use:N \l_modernmath_features_clist },
+      tt = { \clist_use:N \l_modernmath_features_clist, variable = false }
     ] { cfr-lm } [ 2010/05/20 ]
-    \clist_clear:N \l_modernmath_tmpa_clist
+    \clist_clear:N \l_modernmath_features_clist
   }
   \RequirePackage [ T1 ] { fontenc } [ 2005/09/27 ]
   \RequirePackage { textcomp } [ 2005/09/27 ]
@@ -205,11 +209,11 @@
       \setotherlanguages { \g_modernmath_otherlang_tl }
     }
   } {
-    \clist_clear:N \l_modernmath_tmpa_clist
-    \clist_put_right:No \l_modernmath_tmpa_clist \g_modernmath_otherlang_tl
-    \clist_put_right:No \l_modernmath_tmpa_clist \g_modernmath_mainlang_tl
-    \modernmath_cmd_with_optlist:NV \RequirePackage \l_modernmath_tmpa_clist { babel } [ 2008/07/06 ]
-    \clist_clear:N \l_modernmath_tmpa_clist
+    \clist_clear:N \l_modernmath_languages_clist
+    \clist_put_right:No \l_modernmath_languages_clist \g_modernmath_otherlang_tl
+    \clist_put_right:No \l_modernmath_languages_clist \g_modernmath_mainlang_tl
+    \modernmath_cmd_with_optlist:NV \RequirePackage \l_modernmath_languages_clist { babel } [ 2008/07/06 ]
+    \clist_clear:N \l_modernmath_languages_clist
   }
 }
 \RequirePackage { amsmath } [ 2000/07/18 ]
@@ -294,26 +298,29 @@
 %    \end{macrocode}
 % L3: The V arg.\ spec.\ works fine with clists, a fact which is undocumented
 %    \begin{macrocode}
-  \clist_clear:N \l_modernmath_tmpa_clist
-  \clist_clear:N \l_modernmath_tmpb_clist
-  \clist_clear:N \l_modernmath_tmpc_clist
+  \clist_clear:N \l_modernmath_prop_features_clist
+  \clist_clear:N \l_modernmath_mono_features_clist
+  \clist_clear:N \l_modernmath_prop_numbers_clist
+  \clist_clear:N \l_modernmath_mono_numbers_clist
   \bool_if:NT \g_modernmath_mapping_bool {
-    \clist_put_right:Nn \l_modernmath_tmpa_clist { Ligatures = TeX }
+    \clist_put_right:Nn \l_modernmath_prop_features_clist { Ligatures = TeX }
+    \clist_put_right:Nn \l_modernmath_mono_features_clist { Ligatures = TeX }
   }
   \bool_if:NT \g_modernmath_lowerfig_bool {
-    \clist_put_right:Nn \l_modernmath_tmpb_clist { Lowercase }
-    \clist_put_right:Nn \l_modernmath_tmpc_clist { Lowercase }
+    \clist_put_right:Nn \l_modernmath_prop_numbers_clist { Lowercase }
+    \clist_put_right:Nn \l_modernmath_mono_numbers_clist { Lowercase }
   }
   \bool_if:NT \g_modernmath_propfig_bool {
-    \clist_put_right:Nn \l_modernmath_tmpb_clist { Proportional }
+    \clist_put_right:Nn \l_modernmath_prop_numbers_clist { Proportional }
   }
-  \modernmath_set_font:NVVn \setmainfont \l_modernmath_tmpa_clist \l_modernmath_tmpb_clist { Cambria  }
-  \modernmath_set_font:NVVn \setsansfont \l_modernmath_tmpa_clist \l_modernmath_tmpb_clist { Calibri  }
-  \modernmath_set_font:NVVn \setmonofont \l_modernmath_tmpa_clist \l_modernmath_tmpc_clist { Consolas }
+  \modernmath_set_font:NVVn \setmainfont \l_modernmath_prop_features_clist \l_modernmath_prop_numbers_clist { Cambria  }
+  \modernmath_set_font:NVVn \setsansfont \l_modernmath_prop_features_clist \l_modernmath_prop_numbers_clist { Calibri  }
+  \modernmath_set_font:NVVn \setmonofont \l_modernmath_mono_features_clist \l_modernmath_mono_numbers_clist { Consolas }
   \setmathfont { Cambria~ Math }
-  \clist_clear:N \l_modernmath_tmpa_clist
-  \clist_clear:N \l_modernmath_tmpb_clist
-  \clist_clear:N \l_modernmath_tmpc_clist
+  \clist_clear:N \l_modernmath_prop_features_clist
+  \clist_clear:N \l_modernmath_mono_features_clist
+  \clist_clear:N \l_modernmath_prop_numbers_clist
+  \clist_clear:N \l_modernmath_mono_numbers_clist
   \luatex_if_engine:T {
     \lua_now:x {
       local~ function~ patch_font(fontdata)~
