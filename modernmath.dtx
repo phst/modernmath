@@ -1,6 +1,6 @@
 % \iffalse meta-comment
 %
-% Copyright (C) 2010 by Philipp Stephani <st_philipp@yahoo.de>
+% Copyright (C) 2010, 2011 by Philipp Stephani <st_philipp@yahoo.de>
 %
 % This file may be distributed and/or modified under the
 % conditions of the LaTeX Project Public License, either
@@ -82,7 +82,7 @@
 \NeedsTeXFormat{LaTeX2e}[2009/09/24]
 \RequirePackage{etex}[1998/03/26]
 \RequirePackage{expl3}[2010/07/13]
-\ProvidesExplPackage{modernmath}{2010/11/05}{0.3}%
+\ProvidesExplPackage{modernmath}{2011/01/24}{0.3}%
   {Modern mathematical typesetting for LaTeX}
 \msg_new:nnn { modernmath } { legacy } {
   Neither~ LuaTeX~ nor~ XeTeX~ detected,~ falling~ back~
@@ -99,6 +99,7 @@
 \bool_new:N \c_modernmath_legacy_bool
 \luatex_if_engine:TF {
   \msg_warning:nn { modernmath } { luatex }
+  \RequirePackage { luaotfload } [ 2010/11/26 ]
 } {
   \xetex_if_engine:F {
     \msg_warning:nn { modernmath } { legacy }
