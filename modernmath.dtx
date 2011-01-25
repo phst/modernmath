@@ -123,11 +123,6 @@
   main-language        .tl_gset:N   = \g_modernmath_mainlang_tl,
   other-languages      .tl_gset:N   = \g_modernmath_otherlang_tl
 }
-%    \end{macrocode}
-% L3: fix l3keys bug
-%    \begin{macrocode}
-\cs_new_eq:NN \bool_nset_true:N \bool_gset_true:N
-\cs_new_eq:NN \bool_nset_false:N \bool_gset_false:N
 \keys_set:nn { modernmath } {
   microtype            = true,
   inputenc             = true,
