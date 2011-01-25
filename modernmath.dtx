@@ -107,8 +107,7 @@
 % \changes{v0.2}{2010/10/02}{Added mapping and language options}
 % \changes{v0.3}{2010/10/03}{Added options for number style}
 %    \begin{macrocode}
-\bool_new:N \g_modernmath_microtype_internal_bool
-\bool_new:N \g_modernmath_microtype_external_bool
+\bool_new:N \g_modernmath_microtype_bool
 \bool_new:N \g_modernmath_inputenc_bool
 \bool_new:N \g_modernmath_mapping_bool
 \bool_new:N \g_modernmath_lowerfig_bool
@@ -116,24 +115,7 @@
 \tl_new:N \g_modernmath_mainlang_tl
 \tl_new:N \g_modernmath_otherlang_tl
 \keys_define:nn { modernmath } {
-  microtype            .choice:,
-  microtype / off      .code:n      = {
-    \bool_gset_false:N \g_modernmath_microtype_internal_bool
-    \bool_gset_false:N \g_modernmath_microtype_external_bool
-  },
-  microtype / internal .code:n      = {
-    \luatex_if_engine:TF {
-      \bool_gset_true:N \g_modernmath_microtype_internal_bool
-      \bool_gset_false:N \g_modernmath_microtype_external_bool
-    } {
-      \bool_gset_false:N \g_modernmath_microtype_internal_bool
-      \bool_gset_true:N \g_modernmath_microtype_external_bool
-    }
-  },
-  microtype / external .code:n      = {
-    \bool_gset_false:N \g_modernmath_microtype_internal_bool
-    \bool_gset_true:N \g_modernmath_microtype_external_bool
-  },
+  microtype            .bool_gset:N = \g_modernmath_microtype_bool,
   inputenc             .bool_gset:N = \g_modernmath_inputenc_bool,
   mapping              .bool_gset:N = \g_modernmath_mapping_bool,
   lowercase-figures    .bool_gset:N = \g_modernmath_lowerfig_bool,
@@ -147,7 +129,7 @@
 \cs_new_eq:NN \bool_nset_true:N \bool_gset_true:N
 \cs_new_eq:NN \bool_nset_false:N \bool_gset_false:N
 \keys_set:nn { modernmath } {
-  microtype            = external,
+  microtype            = true,
   inputenc             = true,
   mapping              = false,
   lowercase-figures    = true,
@@ -224,7 +206,7 @@
 } {
   \RequirePackage { fontspec } [ 2010/09/29 ]
 }
-\bool_if:NT \g_modernmath_microtype_external_bool {
+\bool_if:NT \g_modernmath_microtype_bool {
   \luatex_if_engine:TF {
     \RequirePackage { microtype } [ 2010/11/11 ]
   } {
@@ -252,16 +234,6 @@
     nabla          = upright,
     partial        = italic,
     vargreek-shape = unicode
-  }
-  \bool_if:NT \g_modernmath_microtype_internal_bool {
-    \newfontfeature { Protrusion } { protrusion = default; }
-    \newfontfeature { Expansion  } { expansion  = default; }
-    \int_set_eq:NN \pdfprotrudechars \c_two
-    \int_set_eq:NN \pdfadjustspacing \c_two
-    \directlua {
-      fonts.protrusions.setups.default.factor = 0.5
-    }
-    \defaultfontfeatures { Protrusion, Expansion }
   }
   \cs_new_protected_nopar:Nn \modernmath_set_font:Nnnn {
     \clist_clear:N \l_modernmath_features_clist
