@@ -109,6 +109,7 @@
 %    \begin{macrocode}
 \bool_new:N \g_modernmath_microtype_bool
 \bool_new:N \g_modernmath_inputenc_bool
+\tl_new:N \g_modernmath_fontenc_tl
 \bool_new:N \g_modernmath_mapping_bool
 \bool_new:N \g_modernmath_lowerfig_bool
 \bool_new:N \g_modernmath_propfig_bool
@@ -117,6 +118,7 @@
 \keys_define:nn { modernmath } {
   microtype            .bool_gset:N = \g_modernmath_microtype_bool,
   inputenc             .bool_gset:N = \g_modernmath_inputenc_bool,
+  fontenc              .tl_gset:N   = \g_modernmath_fontenc_tl,
   mapping              .bool_gset:N = \g_modernmath_mapping_bool,
   lowercase-figures    .bool_gset:N = \g_modernmath_lowerfig_bool,
   proportional-figures .bool_gset:N = \g_modernmath_propfig_bool,
@@ -126,6 +128,7 @@
 \keys_set:nn { modernmath } {
   microtype            = true,
   inputenc             = true,
+  fontenc              = T1,
   mapping              = false,
   lowercase-figures    = true,
   proportional-figures = true
@@ -172,7 +175,7 @@
     ] { cfr-lm } [ 2010/05/20 ]
     \clist_clear:N \l_modernmath_features_clist
   }
-  \RequirePackage [ T1 ] { fontenc } [ 2005/09/27 ]
+  \RequirePackage [ \g_modernmath_fontenc_tl ] { fontenc } [ 2005/09/27 ]
   \RequirePackage { textcomp } [ 2005/09/27 ]
 }
 \tl_if_empty:NF \g_modernmath_mainlang_tl {
