@@ -1,4 +1,4 @@
-;; Copyright (C) 2010 by Philipp Stephani <st_philipp@yahoo.de>
+;; Copyright (C) 2010, 2012 by Philipp Stephani <p.stephani2@gmail.com>
 ;;
 ;; This file may be distributed and/or modified under the
 ;; conditions of the LaTeX Project Public License, either

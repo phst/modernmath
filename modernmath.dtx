@@ -1,6 +1,6 @@
 % \iffalse meta-comment
 %
-% Copyright (C) 2010, 2011 by Philipp Stephani <st_philipp@yahoo.de>
+% Copyright (C) 2010, 2011, 2012 by Philipp Stephani <p.stephani2@gmail.com>
 %
 % This file may be distributed and/or modified under the
 % conditions of the LaTeX Project Public License, either
@@ -53,11 +53,13 @@
 %
 %
 % \changes{v0.1}{2010/09/15}{Initial version}
+% \changes{v0.4}{2012/09/01}{Switched to \pkg{l3docstrip}}
 %
 % \GetFileInfo{modernmath.sty}
 %
-% \title{The \thispackage package\thanks{This document corresponds to \thispackage{}~\fileversion, dated~\filedate.}}
-% \author{Philipp Stephani \\ \texttt{st\_philipp@yahoo.de}}
+% \title{The \thispackage package\thanks{This document corresponds to
+% \thispackage{}~\fileversion, dated~\filedate.}}
+% \author{Philipp Stephani \\ \texttt{p.stephani2@gmail.com}}
 % \date{\filedate}
 %
 %
@@ -79,10 +81,11 @@
 %
 %    \begin{macrocode}
 %<*package>
+%<@@=modernmath>
 \NeedsTeXFormat{LaTeX2e}[2009/09/24]
 \RequirePackage{etex}[1998/03/26]
 \RequirePackage{expl3}[2010/07/13]
-\ProvidesExplPackage{modernmath}{2011/01/25}{0.3}%
+\ProvidesExplPackage{modernmath}{2012/09/01}{0.4}%
   {Modern mathematical typesetting for LaTeX}
 \msg_new:nnn { modernmath } { disclaimer } {
   Unicode~ math~ typesetting~ in~ general,~ the~ unicode-math \\
@@ -94,36 +97,36 @@
   legacy~ font~ encoding~ scheme
 }
 \msg_warning:nn { modernmath } { disclaimer }
-\bool_new:N \c_modernmath_legacy_bool
+\bool_new:N \c_@@_legacy_bool
 \luatex_if_engine:TF {
   \RequirePackage { luaotfload } [ 2010/11/26 ]
 } {
   \xetex_if_engine:F {
     \msg_warning:nn { modernmath } { legacy }
-    \bool_gset_true:N \c_modernmath_legacy_bool
+    \bool_gset_true:N \c_@@_legacy_bool
   }
 }
 %    \end{macrocode}
 % \changes{v0.2}{2010/10/02}{Added mapping and language options}
 % \changes{v0.3}{2010/10/03}{Added options for number style}
 %    \begin{macrocode}
-\bool_new:N \g_modernmath_microtype_bool
-\bool_new:N \g_modernmath_inputenc_bool
-\tl_new:N \g_modernmath_fontenc_tl
-\bool_new:N \g_modernmath_mapping_bool
-\bool_new:N \g_modernmath_lowerfig_bool
-\bool_new:N \g_modernmath_propfig_bool
-\tl_new:N \g_modernmath_mainlang_tl
-\tl_new:N \g_modernmath_otherlang_tl
+\bool_new:N \g_@@_microtype_bool
+\bool_new:N \g_@@_inputenc_bool
+\tl_new:N \g_@@_fontenc_tl
+\bool_new:N \g_@@_mapping_bool
+\bool_new:N \g_@@_lowerfig_bool
+\bool_new:N \g_@@_propfig_bool
+\tl_new:N \g_@@_mainlang_tl
+\tl_new:N \g_@@_otherlang_tl
 \keys_define:nn { modernmath } {
-  microtype            .bool_gset:N = \g_modernmath_microtype_bool,
-  inputenc             .bool_gset:N = \g_modernmath_inputenc_bool,
-  fontenc              .tl_gset:N   = \g_modernmath_fontenc_tl,
-  mapping              .bool_gset:N = \g_modernmath_mapping_bool,
-  lowercase-figures    .bool_gset:N = \g_modernmath_lowerfig_bool,
-  proportional-figures .bool_gset:N = \g_modernmath_propfig_bool,
-  main-language        .tl_gset:N   = \g_modernmath_mainlang_tl,
-  other-languages      .tl_gset:N   = \g_modernmath_otherlang_tl
+  microtype            .bool_gset:N = \g_@@_microtype_bool,
+  inputenc             .bool_gset:N = \g_@@_inputenc_bool,
+  fontenc              .tl_gset:N   = \g_@@_fontenc_tl,
+  mapping              .bool_gset:N = \g_@@_mapping_bool,
+  lowercase-figures    .bool_gset:N = \g_@@_lowerfig_bool,
+  proportional-figures .bool_gset:N = \g_@@_propfig_bool,
+  main-language        .tl_gset:N   = \g_@@_mainlang_tl,
+  other-languages      .tl_gset:N   = \g_@@_otherlang_tl
 }
 \keys_set:nn { modernmath } {
   microtype            = true,
@@ -139,72 +142,72 @@
 %    \end{macrocode}
 % L3: this belongs in expl3
 %    \begin{macrocode}
-\cs_new_nopar:Nn \modernmath_bool_to_str:N {
+\cs_new_nopar:Nn \@@_bool_to_str:N {
   \bool_if:NTF #1 { true } { false }
 }
-\cs_new:Nn \modernmath_cmd_with_optlist:Nn {
+\cs_new:Nn \@@_cmd_with_optlist:Nn {
   \tl_if_empty:nTF { #2 } {
     #1
   } {
     #1 [ #2 ]
   }
 }
-\cs_generate_variant:Nn \modernmath_cmd_with_optlist:Nn { NV }
-\clist_new:N \l_modernmath_features_clist
-\clist_new:N \l_modernmath_prop_features_clist
-\clist_new:N \l_modernmath_mono_features_clist
-\clist_new:N \l_modernmath_numbers_clist
-\clist_new:N \l_modernmath_prop_numbers_clist
-\clist_new:N \l_modernmath_mono_numbers_clist
-\clist_new:N \l_modernmath_languages_clist
-\bool_if:NT \c_modernmath_legacy_bool {
+\cs_generate_variant:Nn \@@_cmd_with_optlist:Nn { NV }
+\clist_new:N \l_@@_features_clist
+\clist_new:N \l_@@_prop_features_clist
+\clist_new:N \l_@@_mono_features_clist
+\clist_new:N \l_@@_numbers_clist
+\clist_new:N \l_@@_prop_numbers_clist
+\clist_new:N \l_@@_mono_numbers_clist
+\clist_new:N \l_@@_languages_clist
+\bool_if:NT \c_@@_legacy_bool {
   \RequirePackage { lmodern } [ 2009/10/30 ]
-  \bool_if:nT { \g_modernmath_lowerfig_bool || \g_modernmath_propfig_bool } {
-    \clist_clear:N \l_modernmath_features_clist
+  \bool_if:nT { \g_@@_lowerfig_bool || \g_@@_propfig_bool } {
+    \clist_clear:N \l_@@_features_clist
 %    \end{macrocode}
 % L3: |\clist_put| accepts more than one list element
 %    \begin{macrocode}
-    \clist_put_right:Nx \l_modernmath_features_clist {
-      oldstyle     = \modernmath_bool_to_str:N \g_modernmath_lowerfig_bool,
-      proportional = \modernmath_bool_to_str:N \g_modernmath_propfig_bool
+    \clist_put_right:Nx \l_@@_features_clist {
+      oldstyle     = \@@_bool_to_str:N \g_@@_lowerfig_bool,
+      proportional = \@@_bool_to_str:N \g_@@_propfig_bool
     }
     \RequirePackage [
-      rm = { \clist_use:N \l_modernmath_features_clist },
-      sf = { \clist_use:N \l_modernmath_features_clist },
-      tt = { \clist_use:N \l_modernmath_features_clist, variable = false }
+      rm = { \clist_use:N \l_@@_features_clist },
+      sf = { \clist_use:N \l_@@_features_clist },
+      tt = { \clist_use:N \l_@@_features_clist, variable = false }
     ] { cfr-lm } [ 2010/05/20 ]
-    \clist_clear:N \l_modernmath_features_clist
+    \clist_clear:N \l_@@_features_clist
   }
-  \RequirePackage [ \g_modernmath_fontenc_tl ] { fontenc } [ 2005/09/27 ]
+  \RequirePackage [ \g_@@_fontenc_tl ] { fontenc } [ 2005/09/27 ]
   \RequirePackage { textcomp } [ 2005/09/27 ]
 }
-\tl_if_empty:NF \g_modernmath_mainlang_tl {
+\tl_if_empty:NF \g_@@_mainlang_tl {
   \xetex_if_engine:TF {
     \RequirePackage { polyglossia } [ 2010/07/27 ]
-    \setmainlanguage { \g_modernmath_mainlang_tl }
-    \tl_if_empty:NF \g_modernmath_otherlang_tl {
-      \setotherlanguages { \g_modernmath_otherlang_tl }
+    \setmainlanguage { \g_@@_mainlang_tl }
+    \tl_if_empty:NF \g_@@_otherlang_tl {
+      \setotherlanguages { \g_@@_otherlang_tl }
     }
   } {
-    \clist_clear:N \l_modernmath_languages_clist
-    \clist_put_right:No \l_modernmath_languages_clist \g_modernmath_otherlang_tl
-    \clist_put_right:No \l_modernmath_languages_clist \g_modernmath_mainlang_tl
-    \modernmath_cmd_with_optlist:NV \RequirePackage \l_modernmath_languages_clist { babel } [ 2008/07/06 ]
-    \clist_clear:N \l_modernmath_languages_clist
+    \clist_clear:N \l_@@_languages_clist
+    \clist_put_right:No \l_@@_languages_clist \g_@@_otherlang_tl
+    \clist_put_right:No \l_@@_languages_clist \g_@@_mainlang_tl
+    \@@_cmd_with_optlist:NV \RequirePackage \l_@@_languages_clist { babel } [ 2008/07/06 ]
+    \clist_clear:N \l_@@_languages_clist
   }
 }
 \RequirePackage { amsmath } [ 2000/07/18 ]
-\bool_if:NT \c_modernmath_legacy_bool {
+\bool_if:NT \c_@@_legacy_bool {
   \RequirePackage { amsfonts } [ 2009/06/22 ]
   \RequirePackage { amssymb } [ 2009/06/22 ]
 }
 \RequirePackage { mathtools } [ 2010/07/11 ]
-\bool_if:NTF \c_modernmath_legacy_bool {
+\bool_if:NTF \c_@@_legacy_bool {
   \RequirePackage { isomath } [ 2009/06/19 ]
 } {
   \RequirePackage { fontspec } [ 2010/09/29 ]
 }
-\bool_if:NT \g_modernmath_microtype_bool {
+\bool_if:NT \g_@@_microtype_bool {
   \luatex_if_engine:TF {
     \RequirePackage { microtype } [ 2010/11/11 ]
   } {
@@ -215,8 +218,8 @@
     }
   }
 }
-\bool_if:NTF \c_modernmath_legacy_bool {
-  \bool_if:NT \g_modernmath_inputenc_bool {
+\bool_if:NTF \c_@@_legacy_bool {
+  \bool_if:NT \g_@@_inputenc_bool {
     \RequirePackage [ utf8 ] { inputenc } [ 2008/03/30 ]
   }
   \DeclareMathSymbol \varepsilon \mathalpha { letters } { 15 }
@@ -233,43 +236,43 @@
     partial        = italic,
     vargreek-shape = unicode
   }
-  \cs_new_protected_nopar:Nn \modernmath_set_font:Nnnn {
-    \clist_clear:N \l_modernmath_features_clist
-    \clist_put_right:Nn \l_modernmath_features_clist { #2 }
+  \cs_new_protected_nopar:Nn \@@_set_font:Nnnn {
+    \clist_clear:N \l_@@_features_clist
+    \clist_put_right:Nn \l_@@_features_clist { #2 }
     \tl_if_empty:nF { #3 } {
-      \clist_put_right:Nn \l_modernmath_features_clist { Numbers = { #3 } }
+      \clist_put_right:Nn \l_@@_features_clist { Numbers = { #3 } }
     }
-    \exp_args:NNV \modernmath_cmd_with_optlist:Nn #1 \l_modernmath_features_clist { #4 }
-    \clist_clear:N \l_modernmath_features_clist
+    \exp_args:NNV \@@_cmd_with_optlist:Nn #1 \l_@@_features_clist { #4 }
+    \clist_clear:N \l_@@_features_clist
   }
-  \cs_generate_variant:Nn \modernmath_set_font:Nnnn { NVV }
+  \cs_generate_variant:Nn \@@_set_font:Nnnn { NVV }
 %    \end{macrocode}
 % L3: The V arg.\ spec.\ works fine with clists, a fact which is undocumented
 %    \begin{macrocode}
-  \clist_clear:N \l_modernmath_prop_features_clist
-  \clist_clear:N \l_modernmath_mono_features_clist
-  \clist_clear:N \l_modernmath_prop_numbers_clist
-  \clist_clear:N \l_modernmath_mono_numbers_clist
-  \clist_put_right:Nn \l_modernmath_mono_features_clist { Scale = 0.95 }
-  \bool_if:NT \g_modernmath_mapping_bool {
-    \clist_put_right:Nn \l_modernmath_prop_features_clist { Ligatures = TeX }
-    \clist_put_right:Nn \l_modernmath_mono_features_clist { Ligatures = TeX }
+  \clist_clear:N \l_@@_prop_features_clist
+  \clist_clear:N \l_@@_mono_features_clist
+  \clist_clear:N \l_@@_prop_numbers_clist
+  \clist_clear:N \l_@@_mono_numbers_clist
+  \clist_put_right:Nn \l_@@_mono_features_clist { Scale = 0.95 }
+  \bool_if:NT \g_@@_mapping_bool {
+    \clist_put_right:Nn \l_@@_prop_features_clist { Ligatures = TeX }
+    \clist_put_right:Nn \l_@@_mono_features_clist { Ligatures = TeX }
   }
-  \bool_if:NT \g_modernmath_lowerfig_bool {
-    \clist_put_right:Nn \l_modernmath_prop_numbers_clist { Lowercase }
-    \clist_put_right:Nn \l_modernmath_mono_numbers_clist { Lowercase }
+  \bool_if:NT \g_@@_lowerfig_bool {
+    \clist_put_right:Nn \l_@@_prop_numbers_clist { Lowercase }
+    \clist_put_right:Nn \l_@@_mono_numbers_clist { Lowercase }
   }
-  \bool_if:NT \g_modernmath_propfig_bool {
-    \clist_put_right:Nn \l_modernmath_prop_numbers_clist { Proportional }
+  \bool_if:NT \g_@@_propfig_bool {
+    \clist_put_right:Nn \l_@@_prop_numbers_clist { Proportional }
   }
-  \modernmath_set_font:NVVn \setmainfont \l_modernmath_prop_features_clist \l_modernmath_prop_numbers_clist { Cambria  }
-  \modernmath_set_font:NVVn \setsansfont \l_modernmath_prop_features_clist \l_modernmath_prop_numbers_clist { Calibri  }
-  \modernmath_set_font:NVVn \setmonofont \l_modernmath_mono_features_clist \l_modernmath_mono_numbers_clist { Consolas }
+  \@@_set_font:NVVn \setmainfont \l_@@_prop_features_clist \l_@@_prop_numbers_clist { Cambria  }
+  \@@_set_font:NVVn \setsansfont \l_@@_prop_features_clist \l_@@_prop_numbers_clist { Calibri  }
+  \@@_set_font:NVVn \setmonofont \l_@@_mono_features_clist \l_@@_mono_numbers_clist { Consolas }
   \setmathfont { Cambria~ Math }
-  \clist_clear:N \l_modernmath_prop_features_clist
-  \clist_clear:N \l_modernmath_mono_features_clist
-  \clist_clear:N \l_modernmath_prop_numbers_clist
-  \clist_clear:N \l_modernmath_mono_numbers_clist
+  \clist_clear:N \l_@@_prop_features_clist
+  \clist_clear:N \l_@@_mono_features_clist
+  \clist_clear:N \l_@@_prop_numbers_clist
+  \clist_clear:N \l_@@_mono_numbers_clist
   \luatex_if_engine:T {
     \lua_now:x {
       local~ function~ patch_font(fontdata)~
